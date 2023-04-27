@@ -1,0 +1,12 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.addMissingImports": true
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter"
+    // "editor.defaultFormatter": "esbenp.prettier-vscode",
+    // // override user's indentation settings (helps when creating new files/auto commenting)
+    // "editor.indentSize": 2,
+    // "editor.tabSize": 2,
+    // "editor.detectIndentation": false
+}

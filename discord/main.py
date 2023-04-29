@@ -34,9 +34,6 @@ class JazzyClient(discord.Client):
         async with channel.typing():
             convo_id = f"{message.guild.id}_{message.channel.id}_{message.channel.name}"
             msg = message.clean_content
-            await message.channel.send(
-                f"tokenizer.eos_token_id = {self.chatbot.tokenizer.eos_token_id}"
-            )
 
             res = self.chatbot.respond_to_message(convo_id, msg)
             if res is not None:

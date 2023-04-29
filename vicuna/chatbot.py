@@ -119,11 +119,10 @@ class JazzyChatbot:
             context_len=Config.context_len,
         )
 
-        msg = ""
-        l_prompt = len(prompt.split(" "))
+        l_prompt = len(prompt.replace(convo.sep2, " "))
         for outputs in output_stream:
             pass
-        msg = " ".join(outputs.split(" ")[l_prompt:]).strip()
+        msg = outputs[l_prompt:].strip()
         convo.messages[-1][-1] = msg
 
         self.responses_to_generate -= 1

@@ -19,7 +19,7 @@ class Config:
 
     convo = Conversation(
         system="A chat between some regular humans and a jazzy but intelligent cat."
-        "The cat gives helpful and detailed answers to questions.",
+        "The cat gives helpful and detailed answers to questions. It's pretty jazzy, and sometimes goes 'blehh'",
         roles=("PERSON", "JAZZYCAT"),
         messages=(),
         offset=0,

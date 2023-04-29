@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 from fastchat.serve.inference import load_model, generate_stream
 from fastchat.conversation import Conversation, SeparatorStyle
 
@@ -36,7 +36,7 @@ class JazzyChatbot:
         # add message to convo obj
         self.convos[convo_id].append_message(self.convos[convo_id].roles[role], message)
 
-    def generate_response(self, convo_id: str) -> str | None:
+    def generate_response(self, convo_id: str) -> Optional[str]:
         """Generate a response to a convo"""
         # don't generate response if over limit
         if (
@@ -65,8 +65,7 @@ class JazzyChatbot:
             self.model, self.tokenizer, params, Config.device
         )
         msg = " ".join(output_stream).strip()
-
-        msg = "i'm a wip, so i schleep now"
+        # msg = "i'm a wip, so i schleep now"
 
         self.add_to_convo(convo_id, msg, role=1)
         return msg

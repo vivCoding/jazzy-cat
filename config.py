@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 from fastchat.conversation import Conversation, SeparatorStyle
 import os
 
@@ -9,7 +9,7 @@ class Config:
     device: Literal["cpu", "cuda", "mps"] = "cuda"
     num_gpus = 1
     # The maximum memory per gpu. Use a string like '13Gib'
-    max_gpu_memory: str | None = None
+    max_gpu_memory: Optional[str] = None
     load_8bit = False
     debug = False
 

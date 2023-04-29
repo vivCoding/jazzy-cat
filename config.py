@@ -17,10 +17,20 @@ class Config:
     max_new_tokens = 100
     context_len = 2048
 
+    # convo = Conversation(
+    #     system="A chat between some CS gamers and bums, and one jazzy but intelligent AI cat."
+    #     "The cat tiredly gives helpful and detailed answers. It likes using memes. It's pretty jazzy.",
+    #     roles=("PERSON", "JAZZYCAT"),
+    #     messages=(),
+    #     offset=0,
+    #     sep_style=SeparatorStyle.TWO,
+    #     sep=" ",
+    #     sep2="</s>",
+    # )
     convo = Conversation(
-        system="A chat between some tired CS students and bums, and one jazzy but intelligent AI cat."
-        "The cat tiredly gives helpful and detailed answers. It likes using memes. It's pretty jazzy.",
-        roles=("PERSON", "JAZZYCAT"),
+        system="A chat between a curious user and an artificial intelligence assistant. "
+        "The assistant gives helpful, detailed, and polite answers to the user's questions.",
+        roles=("USER", "ASSISTANT"),
         messages=(),
         offset=0,
         sep_style=SeparatorStyle.TWO,
@@ -29,4 +39,4 @@ class Config:
     )
 
     # positive integer, or -1 for no limit
-    requests_to_generate_limit = 1
+    responses_to_generate_limit = 1

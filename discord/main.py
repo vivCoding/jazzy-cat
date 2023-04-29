@@ -30,13 +30,14 @@ class JazzyClient(discord.Client):
         if message.author == self.user:
             return
         convo_id = f"{message.guild.id}_{message.channel.id}_{message.channel.name}"
-        msg_txt = message.clean_content
+        msg = message.clean_content
         # add to convo as user
-        self.chatbot.add_to_convo(convo_id, msg_txt, 0)
-        chatbot_response = self.chatbot.generate_response(convo_id)
+        res = self.chatbot.respond_to_message(convo_id, msg)
         # chatbot may not respond
-        if chatbot_response is not None:
-            await message.channel.send(chatbot_response)
+        if res is not None:
+            await message.channel.send(f"got convo_id {convo_id}")
+            # await message.channel.send(f"hmm {convo_id}")
+            await message.channel.send(res)
         # await message.channel.send("i'm a wip, so i schleep now")
 
 

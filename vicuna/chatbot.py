@@ -69,8 +69,10 @@ class JazzyChatbot:
         # the final message will be final output - prompt
         l_prompt = len(prompt.replace(convo.sep2, " "))
         msg: str = outputs[l_prompt:].strip()
-        if (idx := msg.find(convo.sep2)) != -1:
-            msg = msg[:idx]
+        if (idx := msg.find(convo.sep2)) != -1 or (
+            idx := msg.find(convo.roles[0] + ":")
+        ) != -1:
+            msg = msg[:idx].strip()
         # modify the last message in history to include the generated msg
         convo.messages[-1][-1] = msg
 

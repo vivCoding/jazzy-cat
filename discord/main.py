@@ -70,10 +70,10 @@ class JazzyClient(discord.Client):
 
     async def clear_cmd(self, message: discord.Message):
         async with message.channel.typing():
-            await message.channel.send("that's a wip, so i schleep now")
-            # convo_id = self.get_convo_id(message)
-            # self.chatbot.clear_convo(convo_id)
-            # await message.channel.send("ya boi is fresh now")
+            # await message.channel.send("that's a wip, so i schleep now")
+            convo_id = self.get_convo_id(message)
+            self.chatbot.clear_convo(convo_id)
+            await message.channel.send("ya boi is fresh now")
 
     def get_convo_id(self, message: discord.Message) -> str:
         return f"{message.guild.id}_{message.channel.id}"

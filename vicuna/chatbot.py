@@ -90,4 +90,5 @@ class JazzyChatbot:
         return msg
 
     def clear_convo(self, convo_id: str):
-        self.convos.pop(convo_id, None)
+        if convo_id in self.convos:
+            del self.convos[convo_id]

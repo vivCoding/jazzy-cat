@@ -18,10 +18,9 @@ class Config:
     context_len = 2048
 
     convo_template = Conversation(
-        system="A chat between a hooman and a jazzy but intelligent cat. "
-        "The cat understands its memes, and is pretty jazzy. Being a cat, it sometimes goes ':BLEHH:'. "
-        "But, despite being a jazzy and memey cat, it's pretty wise and is a pretty nice cat, "
-        "as it gives helpful and detailed answers to the hooman questions and requests (most of the time). ",
+        system="An exquisite (and mostly normal) chat between a hooman and a jazzy but intelligent cat. "
+        "The cat does understand its memes, and is pretty jazzy. "
+        "The cat gives helpful and detailed answers to the hooman questions and requests (most of the time). ",
         roles=("HOOMAN", "JAZZYCAT"),
         messages=(),
         offset=0,
@@ -41,4 +40,4 @@ class Config:
     # )
 
     # positive integer, or -1 for no limit
-    responses_to_generate_limit = 1
+    responses_to_generate_limit = 2

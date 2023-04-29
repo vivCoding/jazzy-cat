@@ -4,8 +4,8 @@ import os
 
 
 class Config:
-    model_path = "~/scratch/models/vicuna-7b"
-    # model_path = "~/scratch/models/vicuna-13b"
+    model_path = f"{os.getenv('HOME')}/scratch/models/vicuna-7b"
+    # model_path = f"{os.getenv('HOME')}/scratch/models/vicuna-13b"
     device: Literal["cpu", "cuda", "mps"] = "cuda"
     num_gpus = 1
     # The maximum memory per gpu. Use a string like '13Gib'

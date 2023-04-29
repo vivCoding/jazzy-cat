@@ -88,8 +88,8 @@ class JazzyChatbot:
     def respond_to_message(self, convo_id: str, message: str) -> Optional[str]:
         # don't generate response if over limit
         if (
-            self.responses_to_generate > Config.requests_to_generate_limit
-            and Config.requests_to_generate_limit != -1
+            self.responses_to_generate > Config.responses_to_generate_limit
+            and Config.responses_to_generate_limit != -1
         ):
             return None
 
@@ -125,10 +125,10 @@ class JazzyChatbot:
             outputs = outputs.split(" ")
             now = len(outputs) - 1
             if now > pre:
-                msg += " ".join(outputs[pre:now])
+                msg += " ".join(outputs[pre:now]) + " "
                 pre = now
         msg += " ".join(outputs[pre:])
-        convo.messages[-1][-1] = outputs.strip()
+        convo.messages[-1][-1] = " ".join(outputs).strip()
 
         self.responses_to_generate -= 1
 

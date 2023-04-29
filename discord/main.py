@@ -50,8 +50,10 @@ class JazzyClient(discord.Client):
 
             resp = self.chatbot.respond_to_message(convo_id, msg)
             if resp is not None:
-                # limit length to 2000
-                await message.channel.send(resp[:2000])
+                # ensure sent messages are not over 2000 (discord limit)
+                while len(resp) > 0:
+                    await message.channel.send(resp[:2000])
+                    resp = resp[2000:]
 
     async def help_cmd(self, message: discord.Message):
         async with message.channel.typing():

@@ -1,13 +1,15 @@
 import discord
 import os
 from dotenv import load_dotenv
+from vicuna.chatbot import JazzyChatbot
 
 load_dotenv()
 
 
-class JazzyBot(discord.Client):
+class JazzyClient(discord.Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.chatbot = JazzyChatbot()
 
     async def on_ready(self):
         print(f"{self.user} has connected to da discord bois")
@@ -27,11 +29,19 @@ class JazzyBot(discord.Client):
         # don't respond to itself
         if message.author == self.user:
             return
-        await message.channel.send("im a wip, so i schleep")
+        convo_id = f"{message.guild.id}_{message.channel.id}_{message.channel.name}"
+        msg_txt = message.clean_content
+        # add to convo as user
+        self.chatbot.add_to_convo(convo_id, msg_txt, 0)
+        chatbot_response = self.chatbot.generate_response(convo_id)
+        # chatbot may not respond
+        if chatbot_response is not None:
+            await message.channel.send(chatbot_response)
+        # await message.channel.send("i'm a wip, so i schleep now")
 
 
 if __name__ == "__main__":
     intents = discord.Intents.default()
-    client = JazzyBot(intents=intents)
+    client = JazzyClient(intents=intents)
     token = os.getenv("DISCORD_TOKEN")
     client.run(token)

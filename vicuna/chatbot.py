@@ -1,6 +1,8 @@
 from typing import Dict, Optional
 from fastchat.serve.inference import load_model, generate_stream, compute_skip_echo_len
 from fastchat.conversation import Conversation, SeparatorStyle
+import torch
+import gc
 
 from config import Config
 
@@ -25,7 +27,7 @@ class JazzyChatbot:
     def create_new_convo(self, convo_id: str):
         """Creates a new convo if nonexistent"""
         if self.convos.get(convo_id, None) is None:
-            self.convos[convo_id] = Config.convo.copy()
+            self.convos[convo_id] = Config.convo_template.copy()
 
     def respond_to_message(self, convo_id: str, message: str) -> Optional[str]:
         """Adds given message to convo and generates a response"""
@@ -71,6 +73,11 @@ class JazzyChatbot:
             msg = msg[:idx]
         # modify the last message in history to include the generated msg
         convo.messages[-1][-1] = msg
+
+        # bit of cleanup
+        if Config.device == "cuda":
+            torch.cuda.empty_cache()
+        gc.collect()
 
         self.responses_to_generate -= 1
 

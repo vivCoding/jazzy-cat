@@ -23,17 +23,19 @@ class JazzyClient(discord.Client):
 
     async def on_ready(self):
         print(f"{self.user} has connected to da discord bois")
-        # get all text channels it has access to
-        channels = [
-            channel
-            for channel in self.get_all_channels()
-            if channel.type == discord.ChannelType.text
-            and channel.permissions_for(channel.guild.me).send_messages
-        ]
-        # sort by visual position
-        channels.sort(key=lambda c: c.position)
-        # send message to first channel it has access to
-        await channels[0].send("the jazzy cat is here bois")
+        # send greeting msg to every connected server
+        for guild in self.guilds:
+            # get all text channels it has access to in server
+            channels = [
+                channel
+                for channel in guild.channels
+                if channel.type == discord.ChannelType.text
+                and channel.permissions_for(channel.guild.me).send_messages
+            ]
+            # sort by visual position
+            channels.sort(key=lambda c: c.position)
+            # send message to first channel it has access to
+            await channels[0].send("the jazzy cat is here bois")
 
     async def on_message(self, message: discord.Message):
         # don't respond to itself
@@ -49,12 +51,15 @@ class JazzyClient(discord.Client):
         async with message.channel.typing():
             convo_id = self.get_convo_id(message)
 
-            resp = self.chatbot.respond_to_message(convo_id, msg)
-            if resp is not None:
-                # ensure sent messages are not over 2000 (discord limit)
-                while len(resp) > 0:
-                    await message.channel.send(resp[:2000])
-                    resp = resp[2000:]
+            try:
+                resp = self.chatbot.respond_to_message(convo_id, msg)
+                if resp is not None:
+                    # ensure sent messages are not over 2000 (discord limit)
+                    while len(resp) > 0:
+                        await message.channel.send(resp[:2000])
+                        resp = resp[2000:]
+            except:
+                await message.channel.send("i'm feelin a lil sick, imma go afk now")
 
     async def help_cmd(self, message: discord.Message):
         async with message.channel.typing():

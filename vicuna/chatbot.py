@@ -29,7 +29,9 @@ class JazzyChatbot:
         if self.convos.get(convo_id, None) is None:
             self.convos[convo_id] = Config.convo_template.copy()
 
-    def respond_to_message(self, convo_id: str, message: str) -> Optional[str]:
+    def respond_to_message(
+        self, convo_id: str, message: str, author: Optional[str] = None
+    ) -> Optional[str]:
         """Adds given message to convo and generates a response"""
         # don't generate response if over limit
         if (
@@ -42,6 +44,7 @@ class JazzyChatbot:
         self.create_new_convo(convo_id)
         convo = self.convos[convo_id]
 
+        # TODO try using the usernames as roles
         convo.append_message(convo.roles[0], message)
         # TODO account for the fact that multiple ppl could respond and it'll mess up convo order
         # leave the bot's message blank for now

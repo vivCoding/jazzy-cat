@@ -1,3 +1,4 @@
+from typing import Optional
 import discord
 import os
 from dotenv import load_dotenv
@@ -35,20 +36,22 @@ class JazzyClient(discord.Client):
             # sort by visual position
             channels.sort(key=lambda c: c.position)
             # send message to first channel it has access to
-            await channels[0].send("the jazzy cat is here bois")
+            await channels[0].send(
+                "the jazzy cat is here bois", embed=self.create_help_embed()
+            )
 
     async def on_message(self, message: discord.Message):
         # don't respond to itself
         if message.author == self.user:
             return
 
-        msg = message.clean_content
-        if msg in self.cmds:
-            await self.cmds[msg]["func"](message)
-            return
-
-        # await message.channel.send("i'm a wip, so i schleep now")
         async with message.channel.typing():
+            # await message.channel.send("i'm a wip, so i schleep now")
+            msg = message.clean_content
+            if msg in self.cmds:
+                await self.cmds[msg]["func"](message)
+                return
+
             convo_id = self.get_convo_id(message)
 
             try:
@@ -62,21 +65,44 @@ class JazzyClient(discord.Client):
                 await message.channel.send("i'm feelin a lil sick, imma go afk now")
 
     async def help_cmd(self, message: discord.Message):
-        async with message.channel.typing():
-            msg = "jazzy chat help\n"
-            for cmd, val in self.cmds.items():
-                msg += f"- {cmd}: {val['desc']}\n"
-            await message.channel.send(msg)
+        await message.channel.send(embed=self.create_help_embed())
 
     async def clear_cmd(self, message: discord.Message):
-        async with message.channel.typing():
-            # await message.channel.send("that's a wip, so i schleep now")
-            convo_id = self.get_convo_id(message)
-            self.chatbot.clear_convo(convo_id)
-            await message.channel.send("ya boi is fresh now")
+        # await message.channel.send("that's a wip, so i schleep now")
+        convo_id = self.get_convo_id(message)
+        self.chatbot.clear_convo(convo_id)
+        await message.channel.send(
+            embed=self.create_embed(
+                title="Conversation cleared",
+                description="ya boi is fresh now",
+                author=message.author,
+            )
+        )
 
     def get_convo_id(self, message: discord.Message) -> str:
         return f"{message.guild.id}_{message.channel.id}"
+
+    def create_help_embed(self):
+        return self.create_embed(
+            title="All Commands",
+            description="\n".join(
+                [f"⦁ {cmd}: {val['desc']}" for cmd, val in self.cmds.items()]
+            ),
+            author=self.user,
+        )
+
+    def create_embed(
+        self,
+        title: str,
+        description: str,
+        author: Optional[discord.Message.author] = None,
+    ):
+        return discord.Embed(
+            title=title,
+            description=description,
+            color=discord.Color.light_embed(),
+            author=author,
+        )
 
 
 if __name__ == "__main__":

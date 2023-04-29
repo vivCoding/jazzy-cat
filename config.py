@@ -14,8 +14,8 @@ class Config:
     debug = False
 
     temperature = 0.7
-    max_new_tokens = 100
-    context_len = 2048
+    max_new_tokens = 20
+    context_len = 1024
 
     convo = Conversation(
         system="A chat between some tired CS students and bums, and one jazzy but intelligent AI cat."

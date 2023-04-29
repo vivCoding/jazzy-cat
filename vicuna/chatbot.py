@@ -49,20 +49,19 @@ class JazzyChatbot:
 
         # taken from vicuna's src code (fastchat/serve/inference.py)
         prompt = convo.get_prompt()
-        stop_str = (
-            convo.sep
-            if convo.sep_style in [SeparatorStyle.SINGLE, SeparatorStyle.BAIZE]
-            else None
-        )
         params = {
             "model": Config.model_path,
             "prompt": prompt,
             "temperature": Config.temperature,
             "max_new_tokens": Config.max_new_tokens,
-            "stop": stop_str,
+            "stop": None,
         }
         output_stream = generate_stream(
-            self.model, self.tokenizer, params, Config.device
+            model=self.model,
+            tokenizer=self.tokenizer,
+            params=params,
+            device=Config.device,
+            context_len=Config.context_len,
         )
         msg = " ".join(output_stream).strip()
         # msg = "i'm a wip, so i schleep now"

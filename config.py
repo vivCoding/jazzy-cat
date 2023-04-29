@@ -4,8 +4,8 @@ import os
 
 
 class Config:
-    model_path = f"{os.getenv('HOME')}/scratch/models/vicuna-7b"
-    # model_path = f"{os.getenv('HOME')}/scratch/models/vicuna-13b"
+    # model_path = f"{os.getenv('HOME')}/scratch/models/vicuna-7b"
+    model_path = f"{os.getenv('HOME')}/scratch/models/vicuna-13b"
     device: Literal["cpu", "cuda", "mps"] = "cuda"
     num_gpus = 1
     # The maximum memory per gpu. Use a string like '13Gib'
@@ -18,9 +18,9 @@ class Config:
     context_len = 2048
 
     convo = Conversation(
-        system="A chat between some CS gamers and bums, and one jazzy but intelligent AI cat."
-        "The cat tiredly gives helpful and detailed answers. It likes using memes. It's pretty jazzy."
-        'He likes to go "BLEHHH" and "STARE" a lot',
+        system="A chat between some regular humans and a jazzy but intelligent cat."
+        "The cat gives helpful and detailed answers (most of the time). It likes memes. It's pretty jazzy."
+        'He likes to go "BLEHHH" and "STARE" a lot.',
         roles=("PERSON", "JAZZYCAT"),
         messages=(),
         offset=0,

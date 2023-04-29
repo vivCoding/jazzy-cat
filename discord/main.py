@@ -42,7 +42,7 @@ class JazzyClient(discord.Client):
 
         msg = message.clean_content
         if msg in self.cmds:
-            await self.cmds[msg]["func"]
+            await self.cmds[msg]["func"](message)
 
         # await message.channel.send("i'm a wip, so i schleep now")
         async with message.channel.typing():

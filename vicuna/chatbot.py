@@ -1,5 +1,5 @@
 from typing import Dict, Optional
-from fastchat.serve.inference import load_model, generate_stream
+from fastchat.serve.inference import load_model, generate_stream, compute_skip_echo_len
 from fastchat.conversation import Conversation, SeparatorStyle
 
 from config import Config
@@ -27,7 +27,7 @@ class JazzyChatbot:
         if self.convos.get(convo_id, None) is None:
             self.convos[convo_id] = Config.convo.copy()
 
-    def add_to_convo(self, convo_id: str, message: str, role: int):
+    def add_to_convo(self, convo_id: str, message: Optional[str], role: int):
         """Adds a message to a convo"""
         self.create_new_convo(convo_id)
         # check role index
@@ -47,6 +47,8 @@ class JazzyChatbot:
         self.create_new_convo(convo_id)
         convo = self.convos[convo_id]
 
+        self.add_to_convo(convo_id, None, role=1)
+
         # taken from vicuna's src code (fastchat/serve/inference.py)
         prompt = convo.get_prompt()
         params = {
@@ -56,6 +58,7 @@ class JazzyChatbot:
             "max_new_tokens": Config.max_new_tokens,
             "stop": None,
         }
+        skip_echo_len = compute_skip_echo_len(Config.model_path, convo, prompt)
         output_stream = generate_stream(
             model=self.model,
             tokenizer=self.tokenizer,
@@ -63,8 +66,21 @@ class JazzyChatbot:
             device=Config.device,
             context_len=Config.context_len,
         )
-        msg = " ".join(output_stream).strip()
-        # msg = "i'm a wip, so i schleep now"
+        pre = 0
+        msg = ""
+        for outputs in output_stream:
+            outputs = outputs[skip_echo_len:].strip()
+            outputs = outputs.split(" ")
+            now = len(outputs) - 1
+            if now > pre:
+                msg += " ".join(outputs[pre:now]) + " "
+                pre = now
+        msg += " ".join(outputs[pre:])
+        msg = msg.strip()
+        if len(msg) > 2000:
+            msg = msg[:2000]
+        convo.messages[-1][-1] = " ".join(outputs).strip()
 
-        self.add_to_convo(convo_id, msg, role=1)
+        # msg = "i'm a wip, so i schleep now"
+        # self.add_to_convo(convo_id, msg, role=1)
         return msg

@@ -14,13 +14,13 @@ class Config:
     debug = False
 
     temperature = 0.7
-    max_new_tokens = 20
-    context_len = 1024
+    max_new_tokens = 100
+    context_len = 2048
 
     convo = Conversation(
         system="A chat between some tired CS students and bums, and one jazzy but intelligent AI cat."
         "The cat tiredly gives helpful and detailed answers. It likes using memes. It's pretty jazzy.",
-        roles=("PERSON", "JAZZY CAT"),
+        roles=("PERSON", "JAZZYCAT"),
         messages=(),
         offset=0,
         sep_style=SeparatorStyle.TWO,
@@ -29,4 +29,4 @@ class Config:
     )
 
     # positive integer, or -1 for no limit
-    requests_to_generate_limit = 4
+    requests_to_generate_limit = 1

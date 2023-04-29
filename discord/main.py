@@ -29,13 +29,18 @@ class JazzyClient(discord.Client):
         # don't respond to itself
         if message.author == self.user:
             return
-        convo_id = f"{message.guild.id}_{message.channel.id}_{message.channel.name}"
-        msg = message.clean_content
-        # add to convo as user
-        res = self.chatbot.respond_to_message(convo_id, msg)
-        # chatbot may not respond
-        if res is not None:
-            await message.channel.send(res)
+        channel = message.channel
+        async with channel.typing():
+            convo_id = f"{message.guild.id}_{message.channel.id}_{message.channel.name}"
+            msg = message.clean_content
+            # await message.channel.send(f"hmm {self.chatbot.tokenizer.eos_token_id}")
+            # add to convo as user
+            res = self.chatbot.respond_to_message(convo_id, msg)
+            # chatbot may not respond
+            if res is not None:
+                while len(res) > 0:
+                    await message.channel.send(res[:2000])
+                    res = res[2000:]
         # await message.channel.send("i'm a wip, so i schleep now")
 
 

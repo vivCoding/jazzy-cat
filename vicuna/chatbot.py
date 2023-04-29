@@ -121,17 +121,11 @@ class JazzyChatbot:
         msg = ""
         pre = 0
         for outputs in output_stream:
-            outputs = outputs[skip_echo_len:].strip()
-            outputs = outputs.split(" ")
-            now = len(outputs) - 1
-            if now > pre:
-                msg += " ".join(outputs[pre:now]) + " "
-                pre = now
-        msg += " ".join(outputs[pre:])
-        convo.messages[-1][-1] = " ".join(outputs).strip()
+            msg += outputs + "xxx\n" 
+        convo.messages[-1][-1] = outputs.strip()
 
         self.responses_to_generate -= 1
 
-        if len(msg) > 2000:
-            msg = msg[:2000]
+        # if len(msg) > 2000:
+        #     msg = msg[:2000]
         return msg

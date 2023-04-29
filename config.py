@@ -14,7 +14,7 @@ class Config:
     debug = False
 
     temperature = 0.7
-    max_new_tokens = 100
+    max_new_tokens = 512
     context_len = 2048
 
     # convo = Conversation(

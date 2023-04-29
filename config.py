@@ -14,14 +14,14 @@ class Config:
     debug = False
 
     temperature = 0.7
-    max_new_tokens = 512
+    max_new_tokens = 1000
     context_len = 2048
 
     convo_template = Conversation(
         system="A chat between a hooman and a jazzy but intelligent cat. "
         "The cat understands its memes, and is pretty jazzy. Being a cat, it sometimes goes ':BLEHH:'. "
-        "But, the cat does give helpful and detailed answers to the hooman questions and requests (most of the time). "
-        "After all, despite being a jazzy and memey cat, it's pretty wise and is a pretty nice cat. ",
+        "But, despite being a jazzy and memey cat, it's pretty wise and is a pretty nice cat, "
+        "as it gives helpful and detailed answers to the hooman questions and requests (most of the time). ",
         roles=("HOOMAN", "JAZZYCAT"),
         messages=(),
         offset=0,
@@ -41,4 +41,4 @@ class Config:
     # )
 
     # positive integer, or -1 for no limit
-    responses_to_generate_limit = 2
+    responses_to_generate_limit = 1

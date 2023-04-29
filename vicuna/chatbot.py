@@ -43,6 +43,7 @@ class JazzyChatbot:
         convo = self.convos[convo_id]
 
         convo.append_message(convo.roles[0], message)
+        # TODO account for the fact that multiple ppl could respond and it'll mess up convo order
         # leave the bot's message blank for now
         convo.append_message(convo.roles[1], None)
 
@@ -63,18 +64,21 @@ class JazzyChatbot:
             context_len=Config.context_len,
         )
 
-        # keep generating till done
-        for outputs in output_stream:
-            pass
-        # the final message will be final output - prompt
-        l_prompt = len(prompt.replace(convo.sep2, " "))
-        msg: str = outputs[l_prompt:].strip()
-        if (idx := msg.find(convo.sep2)) != -1 or (
-            idx := msg.find(convo.roles[0] + ":")
-        ) != -1:
-            msg = msg[:idx].strip()
-        # modify the last message in history to include the generated msg
-        convo.messages[-1][-1] = msg
+        try:
+            # keep generating till done
+            for outputs in output_stream:
+                pass
+            # the final message will be final output - prompt
+            l_prompt = len(prompt.replace(convo.sep2, " "))
+            msg: str = outputs[l_prompt:].strip()
+            if (idx := msg.find(convo.sep2)) != -1 or (
+                idx := msg.find(convo.roles[0] + ":")
+            ) != -1:
+                msg = msg[:idx].strip()
+            # modify the last message in history to include the generated msg
+            convo.messages[-1][-1] = msg
+        except Exception as e:
+            raise e.with_traceback()
 
         # bit of cleanup
         if Config.device == "cuda":

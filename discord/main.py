@@ -1,7 +1,6 @@
 import discord
 import os
 from dotenv import load_dotenv
-from config import Config
 from vicuna.chatbot import JazzyChatbot
 
 load_dotenv()
@@ -11,6 +10,16 @@ class JazzyClient(discord.Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.chatbot = JazzyChatbot()
+        self.cmds = {
+            "!jhelp": {
+                "func": self.help_cmd,
+                "desc": "Print all commands and info",
+            },
+            "!jclear": {
+                "func": self.clear_cmd,
+                "desc": "Clears the conversation history in channel where command was sent",
+            },
+        }
 
     async def on_ready(self):
         print(f"{self.user} has connected to da discord bois")
@@ -30,17 +39,35 @@ class JazzyClient(discord.Client):
         # don't respond to itself
         if message.author == self.user:
             return
-        channel = message.channel
-        async with channel.typing():
-            convo_id = f"{message.guild.id}_{message.channel.id}_{message.channel.name}"
-            msg = message.clean_content
 
-            res = self.chatbot.respond_to_message(convo_id, msg)
-            if res is not None:
-                while len(res) > 0:
-                    await message.channel.send(res[:2000])
-                    res = res[2000:]
+        msg = message.clean_content
+        if msg in self.cmds:
+            await self.cmds[msg]["func"]
+
         # await message.channel.send("i'm a wip, so i schleep now")
+        async with message.channel.typing():
+            convo_id = self.get_convo_id(message)
+
+            resp = self.chatbot.respond_to_message(convo_id, msg)
+            if resp is not None:
+                # limit length to 2000
+                await message.channel.send(resp[:2000])
+
+    async def help_cmd(self, message: discord.Message):
+        async with message.channel.typing():
+            msg = "jazzy chat help\n"
+            for cmd, val in self.cmds.items():
+                msg += f"- {cmd}: {val['desc']}\n"
+            await message.channel.send(msg)
+
+    async def clear_cmd(self, message: discord.Message):
+        async with message.channel.typing():
+            convo_id = self.get_convo_id(message)
+            self.chatbot.clear_convo(convo_id)
+            await message.channel.send("ya boi is fresh now")
+
+    def get_convo_id(self, message: discord.Message) -> str:
+        return f"{message.guild.id}_{message.channel.id}"
 
 
 if __name__ == "__main__":

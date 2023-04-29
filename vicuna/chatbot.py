@@ -27,65 +27,8 @@ class JazzyChatbot:
         if self.convos.get(convo_id, None) is None:
             self.convos[convo_id] = Config.convo.copy()
 
-    # def add_to_convo(self, convo_id: str, message: str):
-    #     """Adds a message to a convo"""
-    #     self.create_new_convo(convo_id)
-    #     convo = self.convos[convo_id]
-    #     # add message to convo obj
-    #     convo.append_message(convo.roles[0], message)
-    #     convo.append_message(convo.roles[1], message)
-    #     self.requests_to_generate += 1
-
-    # def generate_response(self, convo_id: str) -> Optional[str]:
-    #     """Generate a response to a convo"""
-    #     # don't generate response if over limit
-    #     if (
-    #         self.requests_to_generate > Config.requests_to_generate_limit
-    #         and Config.requests_to_generate_limit != -1
-    #     ):
-    #         return None
-
-    #     self.create_new_convo(convo_id)
-    #     convo = self.convos[convo_id]
-
-    #     # taken from vicuna's src code (fastchat/serve/inference.py)
-    #     prompt = convo.get_prompt()
-    #     params = {
-    #         "model": Config.model_path,
-    #         "prompt": prompt,
-    #         "temperature": Config.temperature,
-    #         "max_new_tokens": Config.max_new_tokens,
-    #         "stop": None,
-    #     }
-    #     skip_echo_len = compute_skip_echo_len(Config.model_path, convo, prompt)
-    #     output_stream = generate_stream(
-    #         model=self.model,
-    #         tokenizer=self.tokenizer,
-    #         params=params,
-    #         device=Config.device,
-    #         context_len=Config.context_len,
-    #     )
-    #     pre = 0
-    #     msg = ""
-    #     for outputs in output_stream:
-    #         outputs = outputs[skip_echo_len:].strip()
-    #         outputs = outputs.split(" ")
-    #         now = len(outputs) - 1
-    #         if now > pre:
-    #             msg += " ".join(outputs[pre:now]) + " "
-    #             pre = now
-    #     msg += " ".join(outputs[pre:])
-    #     msg = msg.strip()
-    #     if len(msg) > 2000:
-    #         msg = msg[:2000]
-    #     convo.messages[-1][-1] = " ".join(outputs).strip()
-
-    #     # msg = "i'm a wip, so i schleep now"
-    #     # self.add_to_convo(convo_id, msg, role=1)
-    #     self.requests_to_generate -= 1
-    #     return msg
-
     def respond_to_message(self, convo_id: str, message: str) -> Optional[str]:
+        """Adds given message to convo and generates a response"""
         # don't generate response if over limit
         if (
             self.responses_to_generate > Config.responses_to_generate_limit
@@ -98,17 +41,16 @@ class JazzyChatbot:
         convo = self.convos[convo_id]
 
         convo.append_message(convo.roles[0], message)
+        # leave the bot's message blank for now
         convo.append_message(convo.roles[1], None)
 
         prompt = convo.get_prompt()
-        skip_echo_len = compute_skip_echo_len(Config.model_path, convo, prompt)
-        stop_str = None
         params = {
             "model": Config.model_path,
             "prompt": prompt,
             "temperature": Config.temperature,
             "max_new_tokens": Config.max_new_tokens,
-            "stop": None,
+            # "stop": None,
             # "stop_ids": [2],
         }
         output_stream = generate_stream(
@@ -119,12 +61,18 @@ class JazzyChatbot:
             context_len=Config.context_len,
         )
 
-        l_prompt = len(prompt.replace(convo.sep2, " "))
+        # keep generating till done
         for outputs in output_stream:
             pass
+        # the final message will be final output - prompt
+        l_prompt = len(prompt.replace(convo.sep2, " "))
         msg = outputs[l_prompt:].strip()
+        # modify the last message in history to include the generated msg
         convo.messages[-1][-1] = msg
 
         self.responses_to_generate -= 1
 
         return msg
+
+    def clear_convo(self, convo_id: str):
+        self.convos.pop(convo_id, None)

@@ -108,7 +108,8 @@ class JazzyChatbot:
             "prompt": prompt,
             "temperature": Config.temperature,
             "max_new_tokens": Config.max_new_tokens,
-            "stop": stop_str,
+            "stop": None,
+            # "stop_ids": [2],
         }
         output_stream = generate_stream(
             model=self.model,
@@ -119,13 +120,12 @@ class JazzyChatbot:
         )
 
         msg = ""
-        pre = 0
+        l_prompt = len(prompt.split(" "))
         for outputs in output_stream:
-            msg += outputs + "xxx\n" 
-        convo.messages[-1][-1] = outputs.strip()
+            pass
+        msg = " ".join(outputs.split(" ")[l_prompt:]).strip()
+        convo.messages[-1][-1] = msg
 
         self.responses_to_generate -= 1
 
-        # if len(msg) > 2000:
-        #     msg = msg[:2000]
         return msg

@@ -1,6 +1,7 @@
 import discord
 import os
 from dotenv import load_dotenv
+from config import Config
 from vicuna.chatbot import JazzyChatbot
 
 load_dotenv()
@@ -33,10 +34,11 @@ class JazzyClient(discord.Client):
         async with channel.typing():
             convo_id = f"{message.guild.id}_{message.channel.id}_{message.channel.name}"
             msg = message.clean_content
-            # await message.channel.send(f"hmm {self.chatbot.tokenizer.eos_token_id}")
-            # add to convo as user
+            await message.channel.send(
+                f"tokenizer.eos_token_id = {self.chatbot.tokenizer.eos_token_id}"
+            )
+
             res = self.chatbot.respond_to_message(convo_id, msg)
-            # chatbot may not respond
             if res is not None:
                 while len(res) > 0:
                     await message.channel.send(res[:2000])

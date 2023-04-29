@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 import discord
 import os
 from dotenv import load_dotenv
@@ -65,10 +65,9 @@ class JazzyClient(discord.Client):
                 await message.channel.send("i'm feelin a lil sick, imma go afk now")
 
     async def help_cmd(self, message: discord.Message):
-        await message.channel.send(embed=self.create_help_embed())
+        await message.channel.send(embed=self.create_help_embed(message.author))
 
     async def clear_cmd(self, message: discord.Message):
-        # await message.channel.send("that's a wip, so i schleep now")
         convo_id = self.get_convo_id(message)
         self.chatbot.clear_convo(convo_id)
         await message.channel.send(
@@ -82,27 +81,31 @@ class JazzyClient(discord.Client):
     def get_convo_id(self, message: discord.Message) -> str:
         return f"{message.guild.id}_{message.channel.id}"
 
-    def create_help_embed(self):
+    def create_help_embed(
+        self, author: Optional[Union[discord.User, discord.Member]] = None
+    ):
         return self.create_embed(
             title="All Commands",
             description="\n".join(
-                [f"⦁ {cmd}: {val['desc']}" for cmd, val in self.cmds.items()]
+                [f"⦁ `{cmd}`: {val['desc']}" for cmd, val in self.cmds.items()]
             ),
-            author=self.user,
+            author=author if author else self.user,
         )
 
     def create_embed(
         self,
         title: str,
         description: str,
-        author: Optional[discord.Message.author] = None,
+        author: Optional[Union[discord.User, discord.Member]] = None,
     ):
-        return discord.Embed(
+        embed = discord.Embed(
             title=title,
             description=description,
             color=discord.Color.light_embed(),
-            author=author,
         )
+        if author:
+            embed.set_author(name=author.display_name, icon_url=author.avatar.url)
+        return embed
 
 
 if __name__ == "__main__":

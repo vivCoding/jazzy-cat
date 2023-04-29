@@ -35,13 +35,14 @@ class JazzyClient(discord.Client):
         res = self.chatbot.respond_to_message(convo_id, msg)
         # chatbot may not respond
         if res is not None:
-            await message.channel.send(f"original message: '{msg}', '{message.content}' ")
             await message.channel.send(res)
         # await message.channel.send("i'm a wip, so i schleep now")
 
 
 if __name__ == "__main__":
     intents = discord.Intents.default()
+    intents.messages = True
+    intents.message_content = True
     client = JazzyClient(intents=intents)
     token = os.getenv("DISCORD_TOKEN")
     client.run(token)

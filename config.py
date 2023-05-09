@@ -28,16 +28,17 @@ class Config:
         sep=" ",
         sep2="</s>",
     )
-    # convo_template = Conversation(
-    #     system="A chat between a curious user and an artificial intelligence assistant. "
-    #     "The assistant gives helpful, detailed, and polite answers to the user's questions.",
-    #     roles=("USER", "ASSISTANT"),
-    #     messages=(),
-    #     offset=0,
-    #     sep_style=SeparatorStyle.TWO,
-    #     sep=" ",
-    #     sep2="</s>",
-    # )
+
+    default_convo_template = Conversation(
+        system="A chat between students and an artificial intelligence assistant. "
+        "The assistant gives helpful, detailed, and polite answers to the students' questions. ",
+        roles=("USER", "ASSISTANT"),
+        messages=(),
+        offset=0,
+        sep_style=SeparatorStyle.TWO,
+        sep=" ",
+        sep2="</s>",
+    )
 
     # positive integer, or -1 for no limit
     responses_to_generate_limit = 2

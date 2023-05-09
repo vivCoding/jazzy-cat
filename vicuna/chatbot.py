@@ -24,13 +24,24 @@ class JazzyChatbot:
         # number of responses to messages need to generate
         self.responses_to_generate = 0
 
-    def create_new_convo(self, convo_id: str):
+    def create_new_convo(
+        self, convo_id: str, prompt: str = None, chatbot_role: str = None
+    ):
         """Creates a new convo if nonexistent"""
         if self.convos.get(convo_id, None) is None:
             self.convos[convo_id] = Config.convo_template.copy()
+            if prompt is not None:
+                self.convos[convo_id].system = prompt
+            if chatbot_role is not None:
+                self.convos[convo_id].roles[1] = chatbot_role
+
+    def get_convo_str(self, convo_id: str) -> Optional[str]:
+        if self.convos.get(convo_id, None):
+            convo = self.convos[convo_id]
+            return convo.get_prompt().replace(convo.sep2, "\n")
 
     def respond_to_message(
-        self, convo_id: str, message: str, author: Optional[str] = None
+        self, convo_id: str, message: str, author: str
     ) -> Optional[str]:
         """Adds given message to convo and generates a response"""
         # don't generate response if over limit
@@ -45,6 +56,7 @@ class JazzyChatbot:
         convo = self.convos[convo_id]
 
         # TODO try using the usernames as roles
+        # convo.append_message(author, message)
         convo.append_message(convo.roles[0], message)
         # TODO account for the fact that multiple ppl could respond and it'll mess up convo order
         # leave the bot's message blank for now
@@ -80,6 +92,21 @@ class JazzyChatbot:
                 msg = msg[:idx].strip()
             # modify the last message in history to include the generated msg
             convo.messages[-1][-1] = msg
+
+            # TODO convert function to return a generator
+            # # the final message will be final output - prompt
+            # l_prompt = len(prompt.replace(convo.sep2, " "))
+            # curr_len = l_prompt
+            # # keep generating till done
+            # for output in output_stream:
+            #     new_word = output.strip()[curr_len:]
+            #     if output.find(convo.sep2) != -1:
+            #         break
+            #     # modify the last message in history to include the generated msg
+            #     convo.messages[-1][-1] += new_word.stri
+            #     yield new_word.strip()
+            # # modify the last message in history to include the generated msg
+            # convo.messages[-1][-1] = msg
         except Exception as e:
             raise e.with_traceback()
 

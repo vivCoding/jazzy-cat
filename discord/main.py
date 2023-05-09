@@ -33,10 +33,6 @@ class JazzyClient(discord.Client):
                 "func": self.change_prompt_cmd,
                 "desc": "Manipulate the jazzy cat into roleplaying as something else. Usage: `!jchange -r <rolename> -p <initial_prompt>`",
             },
-            "!jdefault": {
-                "func": self.default_mode_cmd,
-                "desc": "Reset jazzy cat back to his silly jazzy self. Clears the conversation history",
-            },
         }
 
     async def on_ready(self):

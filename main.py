@@ -72,7 +72,10 @@ class JazzyClient(discord.Client):
 
             convo_id = self.get_convo_id(message)
             try:
-                self.chatbot.add_message_to_convo(convo_id, msg, message.author)
+                # add message, then generate response based on entire convo so far
+                self.chatbot.add_message_to_convo(
+                    convo_id, msg, message.author.global_name
+                )
                 # resp = "i am wip, i go to sleep"
                 resp = self.chatbot.respond_to_convo(convo_id)
                 if resp is not None:
@@ -80,9 +83,10 @@ class JazzyClient(discord.Client):
                     while len(resp) > 0:
                         await message.channel.send(resp[:2000])
                         resp = resp[2000:]
+                    return
             except Exception as e:
-                print(traceback.format_exc())
-                await message.channel.send("i'm feelin a lil sick, imma go afk now")
+                raise e
+            await message.channel.send("i'm feelin a lil sick, imma go afk now")
 
     async def help_cmd(self, message: discord.Message):
         await message.channel.send(embed=self.create_help_embed(message.author))

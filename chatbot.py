@@ -75,7 +75,7 @@ class JazzyChatbot:
 
             return last_output
         except Exception as e:
-            print(traceback.format_exc())
+            raise e
 
     def clear_convo(self, convo_id: str):
         if convo_id in self.convos:

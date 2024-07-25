@@ -4,3 +4,4 @@ venv
 *.log
 test.py
 *.ipynb
+models

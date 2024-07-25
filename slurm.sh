@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name vicuna-chat
+#SBATCH --job-name vllama
 #SBATCH --gres=gpu:1
-#SBATCH --partition=gorman-gpu
+#SBATCH --partition=cuda-gpu
 #SBATCH --output=stdout.log
 
 ./run.sh

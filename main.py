@@ -1,3 +1,4 @@
+import traceback
 from typing import Optional, Union
 from chatbot import JazzyChatbot
 import discord
@@ -71,7 +72,6 @@ class JazzyClient(discord.Client):
 
             convo_id = self.get_convo_id(message)
             try:
-                # TODO
                 self.chatbot.add_message_to_convo(convo_id, msg, message.author)
                 # resp = "i am wip, i go to sleep"
                 resp = self.chatbot.respond_to_convo(convo_id)
@@ -81,7 +81,7 @@ class JazzyClient(discord.Client):
                         await message.channel.send(resp[:2000])
                         resp = resp[2000:]
             except Exception as e:
-                print(e)
+                print(traceback.format_exc())
                 await message.channel.send("i'm feelin a lil sick, imma go afk now")
 
     async def help_cmd(self, message: discord.Message):
@@ -179,6 +179,7 @@ class JazzyClient(discord.Client):
 
 
 if __name__ == "__main__":
+    print("we startin")
     intents = discord.Intents.default()
     intents.messages = True
     intents.message_content = True

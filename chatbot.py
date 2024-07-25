@@ -1,3 +1,4 @@
+import traceback
 from collections import defaultdict
 import gc
 from typing import Dict, List, Optional, TypedDict
@@ -74,7 +75,7 @@ class JazzyChatbot:
 
             return last_output
         except Exception as e:
-            raise e.with_traceback()
+            print(traceback.format_exc())
 
     def clear_convo(self, convo_id: str):
         if convo_id in self.convos:

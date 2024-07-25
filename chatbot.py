@@ -39,7 +39,7 @@ class JazzyChatbot:
         self, convo_id: str, message: str, author: str
     ) -> Optional[str]:
         # create new convo if it didn't exist
-        # terrible practice tbh, but idc
+        # terrible practice tbh, not pure func, but idc
         self.create_new_convo(convo_id)
         self.convos[convo_id].append({"role": author, "content": message})
 
@@ -52,13 +52,13 @@ class JazzyChatbot:
                 add_generation_prompt=True,
                 return_tensors="pt",
                 return_dict=True,
-            ).to(device)
+            ).to(Config.device)
 
             input_len = inputs["input_ids"].shape[1]
 
             outputs = self.model.generate(
                 **inputs,
-                max_new_tokens=max_new_tokens,
+                max_new_tokens=Config.max_new_tokens,
                 # default temp is 1?
                 do_sample=True,
             )

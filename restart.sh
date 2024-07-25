@@ -1,6 +1,4 @@
 #!/bin/bash
-module load slurm
-
 ./kill.sh
 
 sbatch slurm.sh

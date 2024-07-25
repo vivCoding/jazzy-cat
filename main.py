@@ -73,14 +73,15 @@ class JazzyClient(discord.Client):
             try:
                 # TODO
                 self.chatbot.add_message_to_convo(convo_id, msg, message.author)
-                resp = "i am wip, i go to sleep"
+                # resp = "i am wip, i go to sleep"
                 resp = self.chatbot.respond_to_convo(convo_id)
                 if resp is not None:
                     # ensure sent messages are not over 2000 (discord limit)
                     while len(resp) > 0:
                         await message.channel.send(resp[:2000])
                         resp = resp[2000:]
-            except:
+            except Exception as e:
+                print(e)
                 await message.channel.send("i'm feelin a lil sick, imma go afk now")
 
     async def help_cmd(self, message: discord.Message):
@@ -93,7 +94,7 @@ class JazzyClient(discord.Client):
         await message.channel.send(
             embed=self.create_embed(
                 title="Resetted the jazzy cat",
-                description=f'ya boi is fresh now\nContext resetted to: "{curr_context}"',
+                description=f"ya boi is fresh now",
                 author=message.author,
             )
         )
@@ -114,11 +115,11 @@ class JazzyClient(discord.Client):
         self.chatbot.clear_convo(convo_id)
 
         self.chatbot.create_new_convo(convo_id, context=Config.serious_context)
-        await message.send(
+        await message.channel.send(
             "the jazzy cat is serious now",
             embed=self.create_embed(
                 title="Serious mode activated",
-                description=f'he is now an AI assistant\n\nContext set to "{Config.serious_context}"',
+                description=f"he is now a certified AI assistant",
                 author=message.author,
             ),
         )
@@ -132,7 +133,7 @@ class JazzyClient(discord.Client):
         self.chatbot.create_new_convo(convo_id, context=context)
         await message.channel.send(
             embed=self.create_embed(
-                title="Changed jazzy cat's system context",
+                title="Changed jazzy cat's context",
                 description=f"{context}",
                 author=message.author,
             )

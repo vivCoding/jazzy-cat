@@ -4,6 +4,7 @@ import os
 
 class Config:
     model_id = f"{os.getenv('HOME')}/scratch/models/Meta-Llama-3.1-8B-Instruct-AWQ-INT4"
+    model_quantized = True
     device: Literal["cpu", "cuda"] = "cuda"
 
     max_new_tokens = 1000

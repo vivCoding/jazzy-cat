@@ -83,10 +83,9 @@ class JazzyClient(discord.Client):
                     while len(resp) > 0:
                         await message.channel.send(resp[:2000])
                         resp = resp[2000:]
-                    return
             except Exception as e:
+                await message.channel.send("i'm feelin a lil sick, imma go afk now")
                 raise e
-            await message.channel.send("i'm feelin a lil sick, imma go afk now")
 
     async def help_cmd(self, message: discord.Message):
         await message.channel.send(embed=self.create_help_embed(message.author))

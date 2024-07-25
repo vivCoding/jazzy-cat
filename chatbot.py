@@ -17,12 +17,19 @@ class JazzyChatbot:
     def __init__(self) -> None:
         # load model
         self.tokenizer = AutoTokenizer.from_pretrained(Config.model_id)
-        self.model = AutoAWQForCausalLM.from_pretrained(
-            Config.model_id,
-            torch_dtype=torch.float16,
-            low_cpu_mem_usage=True,
-            device_map="cuda",
-        )
+        if Config.model_quantized:
+            self.model = AutoAWQForCausalLM.from_pretrained(
+                Config.model_id,
+                torch_dtype=torch.float16,
+                low_cpu_mem_usage=True,
+                device_map="cuda",
+            )
+        else:
+            self.model = AutoModelForCausalLM.from_pretrained(
+                Config.model_id,
+                torch_dtype=torch.bfloat16,
+                device_map="cuda",
+            )
         # stores all the convos for one chatbot as { id: msgs[] }
         self.convos: Dict[str, List[Message]] = defaultdict(list)
 

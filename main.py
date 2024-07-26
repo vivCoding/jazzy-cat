@@ -4,7 +4,6 @@ from typing import Optional, Union
 import torch
 from chatbot import JazzyChatbot
 import discord
-import aiofiles
 import os
 from dotenv import load_dotenv
 from config import Config
@@ -155,8 +154,9 @@ class JazzyClient(discord.Client):
 
     async def get_logs_cmd(self, message: discord.Message):
         if os.path.isfile(Config.log_slurm_file):
-            async with aiofiles.open(Config.log_slurm_file, "r") as f:
-                logs = await f.read()
+            with open(Config.log_slurm_file, "r") as f:
+                logs = f.read()
+                logs = logs[-500:]
                 await message.channel.send(
                     embed=self.create_embed(
                         title="jazzy cat's logs",
@@ -211,5 +211,5 @@ if __name__ == "__main__":
     intents.message_content = True
     client = JazzyClient(intents=intents)
     token = os.getenv("DISCORD_TOKEN")
-    handler = logging.FileHandler
-    client.run(token, log_handler=Config.log_discord_file, log_level=logging.DEBUG)
+    handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+    client.run(token, log_handler=handler, log_level=logging.DEBUG, root_logger=True)

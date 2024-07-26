@@ -1,17 +1,15 @@
+import logging
 import traceback
 from typing import Optional, Union
-
 import torch
 from chatbot import JazzyChatbot
 import discord
+import aiofiles
 import os
 from dotenv import load_dotenv
 from config import Config
 
 load_dotenv()
-
-
-context = """You are a helpful tech bro, named "jazzy cat", talking to a bunch of tech bros on a Discord server."""
 
 
 class JazzyClient(discord.Client):
@@ -39,9 +37,17 @@ class JazzyClient(discord.Client):
                 "func": self.change_context_cmd,
                 "desc": "Manipulates the jazzy cat into talking as something else (e.g. change the context). Usage: `!jchange <new_context>`",
             },
+            "!jlogs": {
+                "func": self.get_logs_cmd,
+                "desc": "Get debug logs",
+            },
         }
+        self.has_greeted = False
 
     async def on_ready(self):
+        if self.has_greeted:
+            return
+        self.has_greeted = True
         print(f"{self.user} has connected to the discord bois")
         # send greeting msg to every connected server
         for guild in self.guilds:
@@ -147,6 +153,18 @@ class JazzyClient(discord.Client):
     def get_convo_id(self, message: discord.Message) -> str:
         return f"{message.guild.id}_{message.channel.id}"
 
+    async def get_logs_cmd(self, message: discord.Message):
+        if os.path.isfile(Config.log_slurm_file):
+            async with aiofiles.open(Config.log_slurm_file, "r") as f:
+                logs = await f.read()
+                await message.channel.send(
+                    embed=self.create_embed(
+                        title="jazzy cat's logs",
+                        description=f"{logs}",
+                        author=message.author,
+                    )
+                )
+
     async def send_cmd_error(self, message: discord.Message, cmd: str):
         await message.channel.send(
             embed=self.create_embed(
@@ -193,4 +211,5 @@ if __name__ == "__main__":
     intents.message_content = True
     client = JazzyClient(intents=intents)
     token = os.getenv("DISCORD_TOKEN")
-    client.run(token)
+    handler = logging.FileHandler
+    client.run(token, log_handler=Config.log_discord_file, log_level=logging.DEBUG)

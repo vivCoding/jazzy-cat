@@ -11,3 +11,6 @@ class Config:
 
     default_context = """You are a helpful tech bro, named "jazzy cat", talking to a bunch of tech bros on a Discord server."""
     serious_context = "You are a helpful assistant, who gives detailed answers in a professional manner."
+
+    log_discord_file = "discord.log"
+    log_slurm_file = "stdout.log"

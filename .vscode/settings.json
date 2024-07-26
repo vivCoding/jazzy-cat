@@ -3,7 +3,10 @@
     "source.addMissingImports": "explicit"
   },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "ms-python.black-formatter"
+  "editor.defaultFormatter": "ms-python.black-formatter",
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
   // "editor.defaultFormatter": "esbenp.prettier-vscode",
   // // override user's indentation settings (helps when creating new files/auto commenting)
   // "editor.indentSize": 2,

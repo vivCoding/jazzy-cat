@@ -1,5 +1,7 @@
 import traceback
 from typing import Optional, Union
+
+import torch
 from chatbot import JazzyChatbot
 import discord
 import os
@@ -183,6 +185,9 @@ class JazzyClient(discord.Client):
 
 if __name__ == "__main__":
     print("we startin")
+    print("has cuda", torch.cuda.is_available())
+    print("cuda version", torch.version.cuda)
+    print("example tensor", torch.tensor([1, 2, 3]).cuda())
     intents = discord.Intents.default()
     intents.messages = True
     intents.message_content = True

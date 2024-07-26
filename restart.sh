@@ -1,7 +1,7 @@
 #!/bin/bash
 ./kill.sh
 
-module load cuda/12.1
+module load cuda/11.8
 
 sbatch slurm.sh
 

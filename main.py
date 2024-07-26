@@ -153,8 +153,8 @@ class JazzyClient(discord.Client):
         return f"{message.guild.id}_{message.channel.id}"
 
     async def get_logs_cmd(self, message: discord.Message):
-        if os.path.isfile(Config.log_slurm_file):
-            with open(Config.log_slurm_file, "r") as f:
+        if os.path.isfile(Config.log_file):
+            with open(Config.log_file, "r") as f:
                 logs = f.read()
                 logs = logs[-500:]
                 await message.channel.send(
@@ -164,6 +164,14 @@ class JazzyClient(discord.Client):
                         author=message.author,
                     )
                 )
+                return
+        await message.channel.send(
+            embed=self.create_embed(
+                title="jazzy cat's logs",
+                description=f"lmao nonexistent",
+                author=message.author,
+            )
+        )
 
     async def send_cmd_error(self, message: discord.Message, cmd: str):
         await message.channel.send(
@@ -206,10 +214,13 @@ if __name__ == "__main__":
     print("has cuda", torch.cuda.is_available())
     print("cuda version", torch.version.cuda)
     print("example tensor", torch.tensor([1, 2, 3]).cuda())
+
     intents = discord.Intents.default()
     intents.messages = True
     intents.message_content = True
+
     client = JazzyClient(intents=intents)
     token = os.getenv("DISCORD_TOKEN")
-    handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+    handler = logging.FileHandler(filename=Config.log_file, encoding="utf-8", mode="w")
+
     client.run(token, log_handler=handler, log_level=logging.DEBUG, root_logger=True)

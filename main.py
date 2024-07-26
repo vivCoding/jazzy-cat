@@ -69,7 +69,7 @@ class JazzyClient(discord.Client):
             # parse messages for any commands
             for cmd in self.cmds:
                 if msg.startswith(cmd):
-                    await self.cmds[msg]["func"](message)
+                    await self.cmds[cmd]["func"](message)
                     return
 
             convo_id = self.get_convo_id(message)

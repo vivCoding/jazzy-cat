@@ -1,3 +1,4 @@
+import logging
 import traceback
 from collections import defaultdict
 import gc
@@ -36,7 +37,7 @@ class JazzyChatbot:
     def create_new_convo(self, convo_id: str, context: str = Config.default_context):
         """Creates a new convo if nonexistent"""
         if self.convos.get(convo_id, None) is None:
-            print("creating new convo", convo_id)
+            logging.debug(f"creating new convo {convo_id}")
             # using default context if context param not provided
             self.convos[convo_id] = [{"role": "system", "content": context}]
 
@@ -46,13 +47,17 @@ class JazzyChatbot:
         # create new convo if it didn't exist
         # terrible practice tbh, not pure func, but idc
         self.create_new_convo(convo_id)
-        print("adding to convo", convo_id)
-        self.convos[convo_id].append({"role": author, "content": message})
+        # why do i have to check if message is not None? idk why
+        # there's prob some other reason why it's happening but i'm lazy
+        if message is not None:
+            logging.debug(f"adding to convo {convo_id}")
+            self.convos[convo_id].append({"role": author, "content": message})
 
     def respond_to_convo(self, convo_id: str):
         try:
             convo = self.convos[convo_id]
-            print("responding to convo", convo_id, convo)
+            logging.debug(f"responding to convo {convo_id} {convo}")
+
             inputs = self.tokenizer.apply_chat_template(
                 convo,
                 tokenize=True,

@@ -155,14 +155,13 @@ class JazzyClient(discord.Client):
     async def get_logs_cmd(self, message: discord.Message):
         if os.path.isfile(Config.log_file):
             with open(Config.log_file, "r") as f:
-                logs = f.read()
-                logs = logs[-500:]
                 await message.channel.send(
                     embed=self.create_embed(
                         title="jazzy cat's logs",
-                        description=f"{logs}",
+                        description="attached as a file",
                         author=message.author,
-                    )
+                    ),
+                    file=discord.File(f),
                 )
                 return
         await message.channel.send(
